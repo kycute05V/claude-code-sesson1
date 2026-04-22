@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo Cáo Kinh Doanh - E-Commerce Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#090A14',
+            card: '#12131D',
+            border: '#1E2030',
+            inputbg: '#1A1B2E',
+            muted: '#6B6C80',
+            placeholder: '#4A4B63',
+            primary: '#DF6B33',
+            primaryhover: '#C45A28',
+          },
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #090A14; }
+    .card { background-color: #12131D; border: 1px solid #1E2030; }
+    canvas { max-width: 100%; }
+    .glow-right { position: absolute; top: 0; right: 0; width: 400px; height: 400px; background: radial-gradient(circle, rgba(223,107,51,0.08) 0%, transparent 70%); pointer-events: none; }
+    .glow-left  { position: absolute; bottom: 0; left: 0; width: 400px; height: 400px; background: radial-gradient(circle, rgba(223,107,51,0.06) 0%, transparent 70%); pointer-events: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #12131D; }
+    ::-webkit-scrollbar-thumb { background: #1E2030; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2a2c40; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .chart-wrap canvas { max-height: 280px; }
+  </style>
+</head>
+<body class="min-h-screen text-white font-inter relative overflow-x-hidden">
+  <div class="glow-right"></div>
+  <div class="glow-left"></div>
+
+  <!-- Header -->
+  <header class="relative z-10 border-b border-[#1E2030]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <svg width="32" height="32" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="28" height="28" rx="8" fill="#DF6B33"/>
+          <path d="M8 14C8 10.686 10.686 8 14 8C17.314 8 20 10.686 20 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M11 20C11 17.791 12.791 16 15 16C17.209 16 19 17.791 19 20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="font-poppins font-bold text-xl text-white">E-Commerce Analytics</span>
+      </div>
+      <nav class="flex items-center gap-6">
+        <a href="charts.html" class="font-inter text-sm text-[#DF6B33] font-medium">Báo Cáo</a>
+        <a href="login.html" class="font-inter text-sm text-[#6B6C80] hover:text-white transition-colors duration-200">Đăng Nhập</a>
+        <a href="register.html" class="font-inter text-sm text-[#6B6C80] hover:text-white transition-colors duration-200">Đăng Ký</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+    <!-- Page Title -->
+    <div class="mb-8">
+      <h1 class="font-poppins font-bold text-2xl text-white">Báo Cáo Kinh Doanh</h1>
+      <p class="font-inter text-sm text-[#6B6C80] mt-1">Tổng quan doanh thu, kết quả kinh doanh và số liệu marketing</p>
+    </div>
+
+    <!-- ========== KPI CARDS ========== -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="card rounded-2xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <span class="font-inter text-xs text-[#6B6C80] uppercase tracking-wide">Doanh thu tháng</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A4B63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <p class="font-poppins font-bold text-2xl text-white">12.5 tỷ</p>
+        <p class="font-inter text-xs mt-1" style="color:#4CAF50;">↑ 18.2% so với tháng trước</p>
+      </div>
+      <div class="card rounded-2xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <span class="font-inter text-xs text-[#6B6C80] uppercase tracking-wide">Đơn hàng</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A4B63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <p class="font-poppins font-bold text-2xl text-white">8,420</p>
+        <p class="font-inter text-xs mt-1" style="color:#4CAF50;">↑ 12.5% so với tháng trước</p>
+      </div>
+      <div class="card rounded-2xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <span class="font-inter text-xs text-[#6B6C80] uppercase tracking-wide">Khách hàng mới</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A4B63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <p class="font-poppins font-bold text-2xl text-white">1,847</p>
+        <p class="font-inter text-xs mt-1" style="color:#4CAF50;">↑ 23.1% so với tháng trước</p>
+      </div>
+      <div class="card rounded-2xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <span class="font-inter text-xs text-[#6B6C80] uppercase tracking-wide">Tỷ lệ chuyển đổi</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A4B63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <p class="font-poppins font-bold text-2xl text-white">3.24%</p>
+        <p class="font-inter text-xs mt-1" style="color:#EF5350;">↓ 0.3% so với tháng trước</p>
+      </div>
+    </div>
+
+    <!-- ========== SECTION 1: DOANH THU BÁN HÀNG ========== -->
+    <div class="mb-8">
+      <h2 class="font-poppins font-semibold text-lg text-white mb-4">1. Doanh Thu Bán Hàng</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card rounded-2xl p-6 chart-wrap">
+          <h3 class="font-poppins font-semibold text-sm text-white mb-4">Doanh Thu 12 Tháng (tỷ đồng)</h3>
+          <canvas id="revenueChart"></canvas>
+        </div>
+        <div class="card rounded-2xl p-6 chart-wrap">
+          <h3 class="font-poppins font-semibold text-sm text-white mb-4">Doanh Thu Theo Danh Mục (tỷ đồng)</h3>
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card rounded-2xl p-6 mt-6 overflow-x-auto">
+        <h3 class="font-poppins font-semibold text-sm text-white mb-4">Chi Tiết Doanh Thu Theo Tháng</h3>
+        <table class="w-full font-inter text-sm min-w-[600px]">
+          <thead>
+            <tr class="text-[#6B6C80] text-xs uppercase tracking-wide border-b border-[#1E2030]">
+              <th class="text-left py-3 px-3 font-medium">Tháng</th>
+              <th class="text-right py-3 px-3 font-medium">Doanh thu</th>
+              <th class="text-right py-3 px-3 font-medium">Số đơn hàng</th>
+              <th class="text-right py-3 px-3 font-medium">AOV</th>
+              <th class="text-right py-3 px-3 font-medium">Tăng trưởng</th>
+            </tr>
+          </thead>
+          <tbody id="revenue-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== SECTION 2: KẾT QUẢ KINH DOANH ========== -->
+    <div class="mb-8">
+      <h2 class="font-poppins font-semibold text-lg text-white mb-4">2. Kết Quả Kinh Doanh</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card rounded-2xl p-6 chart-wrap">
+          <h3 class="font-poppins font-semibold text-sm text-white mb-4">Lợi Nhuận Gộp vs Chi Phí (tỷ đồng)</h3>
+          <canvas id="profitChart"></canvas>
+        </div>
+        <div class="card rounded-2xl p-6 chart-wrap">
+          <h3 class="font-poppins font-semibold text-sm text-white mb-4">Cơ Cấu Chi Phí</h3>
+          <canvas id="costPieChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card rounded-2xl p-6 mt-6 overflow-x-auto">
+        <h3 class="font-poppins font-semibold text-sm text-white mb-4">Báo Cáo Kết Quả Kinh Doanh Quý</h3>
+        <table class="w-full font-inter text-sm min-w-[600px]">
+          <thead>
+            <tr class="text-[#6B6C80] text-xs uppercase tracking-wide border-b border-[#1E2030]">
+              <th class="text-left py-3 px-3 font-medium">Chỉ tiêu</th>
+              <th class="text-right py-3 px-3 font-medium">Q1/2025</th>
+              <th class="text-right py-3 px-3 font-medium">Q2/2025</th>
+              <th class="text-right py-3 px-3 font-medium">Q3/2025</th>
+              <th class="text-right py-3 px-3 font-medium">Q4/2025</th>
+              <th class="text-right py-3 px-3 font-medium">Cả năm</th>
+            </tr>
+          </thead>
+          <tbody id="bizresult-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== SECTION 3: MARKETING ========== -->
+    <div class="mb-8">
+      <h2 class="font-poppins font-semibold text-lg text-white mb-4">3. Số Liệu Marketing</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div class="card rounded-2xl p-6 lg:col-span-2">
+          <h3 class="font-poppins font-semibold text-sm text-white mb-4">Phễu Chuyển Đổi Marketing</h3>
+          <div id="funnel-chart" class="space-y-2"></div>
+        </div>
+        <div class="card rounded-2xl p-6">
+          <h3 class="font-poppins font-semibold text-sm text-white mb-4">Chỉ Số Channel</h3>
+          <div id="channel-metrics" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <div class="card rounded-2xl p-6 overflow-x-auto mb-6">
+        <h3 class="font-poppins font-semibold text-sm text-white mb-4">Chiến Dịch Marketing Hiện Tại</h3>
+        <table class="w-full font-inter text-sm min-w-[700px]">
+          <thead>
+            <tr class="text-[#6B6C80] text-xs uppercase tracking-wide border-b border-[#1E2030]">
+              <th class="text-left py-3 px-3 font-medium">Chiến dịch</th>
+              <th class="text-left py-3 px-3 font-medium">Kênh</th>
+              <th class="text-right py-3 px-3 font-medium">Ngân sách</th>
+              <th class="text-right py-3 px-3 font-medium">Impression</th>
+              <th class="text-right py-3 px-3 font-medium">Click</th>
+              <th class="text-right py-3 px-3 font-medium">Đơn hàng</th>
+              <th class="text-right py-3 px-3 font-medium">ROAS</th>
+            </tr>
+          </thead>
+          <tbody id="campaign-table-body"></tbody>
+        </table>
+      </div>
+
+      <div class="card rounded-2xl p-6 overflow-x-auto">
+        <h3 class="font-poppins font-semibold text-sm text-white mb-4">Nguồn Traffic Website</h3>
+        <table class="w-full font-inter text-sm min-w-[600px]">
+          <thead>
+            <tr class="text-[#6B6C80] text-xs uppercase tracking-wide border-b border-[#1E2030]">
+              <th class="text-left py-3 px-3 font-medium">Nguồn</th>
+              <th class="text-right py-3 px-3 font-medium">Phiên</th>
+              <th class="text-right py-3 px-3 font-medium">Tỷ lệ thoát</th>
+              <th class="text-right py-3 px-3 font-medium">Thời gian TB</th>
+              <th class="text-right py-3 px-3 font-medium">Chuyển đổi</th>
+              <th class="text-right py-3 px-3 font-medium">Tỷ lệ</th>
+            </tr>
+          </thead>
+          <tbody id="traffic-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 border-t border-[#1E2030] py-6 mt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="font-inter text-xs text-[#6B6C80]">E-Commerce Analytics Dashboard © 2025</p>
+      <div class="flex items-center gap-6">
+        <a href="login.html" class="font-inter text-xs text-[#6B6C80] hover:text-white transition-colors duration-200">Đăng Nhập</a>
+        <a href="register.html" class="font-inter text-xs text-[#6B6C80] hover:text-white transition-colors duration-200">Đăng Ký</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== SHARED CHART CONFIG =====
+    Chart.defaults.color = '#6B6C80';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.size = 12;
+
+    function chartTooltip() {
+      return {
+        backgroundColor: '#12131D',
+        borderColor: '#1E2030',
+        borderWidth: 1,
+        titleColor: '#fff',
+        bodyColor: '#B0B1C8',
+        cornerRadius: 12,
+        padding: 12,
+      };
+    }
+
+    // ===== MOCK DATA =====
+    const revenueData = [
+      { month: 'T1', revenue: 6.2, orders: 3800, aov: 1.63 },
+      { month: 'T2', revenue: 7.1, orders: 4200, aov: 1.69 },
+      { month: 'T3', revenue: 8.4, orders: 5100, aov: 1.65 },
+      { month: 'T4', revenue: 7.8, orders: 4700, aov: 1.66 },
+      { month: 'T5', revenue: 9.2, orders: 5600, aov: 1.64 },
+      { month: 'T6', revenue: 10.5, orders: 6200, aov: 1.69 },
+      { month: 'T7', revenue: 9.8, orders: 5800, aov: 1.69 },
+      { month: 'T8', revenue: 11.2, orders: 6700, aov: 1.67 },
+      { month: 'T9', revenue: 12.1, orders: 7200, aov: 1.68 },
+      { month: 'T10', revenue: 13.4, orders: 7900, aov: 1.70 },
+      { month: 'T11', revenue: 15.8, orders: 9400, aov: 1.68 },
+      { month: 'T12', revenue: 12.5, orders: 8420, aov: 1.68 },
+    ];
+
+    const categoryData = [
+      { name: 'Điện tử', revenue: 4.2 },
+      { name: 'Thời trang', revenue: 2.8 },
+      { name: 'Gia dụng', revenue: 1.9 },
+      { name: 'Sắc đẹp', revenue: 1.5 },
+      { name: 'Thể thao', revenue: 1.1 },
+      { name: 'Sách', revenue: 1.0 },
+    ];
+    const categoryColors = ['#DF6B33','#6366F1','#10B981','#F59E0B','#EF4444','#8B5CF6'];
+
+    const profitData = {
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      gross: [2.1, 2.8, 3.2, 4.5],
+      expense: [1.4, 1.6, 1.8, 2.1],
+    };
+
+    const costPieData = [
+      { name: 'Vận chuyển', value: 28 },
+      { name: 'Marketing', value: 25 },
+      { name: 'Platform', value: 20 },
+      { name: 'Nhân sự', value: 15 },
+      { name: 'Khác', value: 12 },
+    ];
+    const costColors = ['#DF6B33','#6366F1','#10B981','#F59E0B','#EF4444'];
+
+    const funnelData = [
+      { stage: 'Lượt xem', value: 245000 },
+      { stage: 'Click', value: 42000 },
+      { stage: 'Xem sản phẩm', value: 18500 },
+      { stage: 'Thêm vào giỏ', value: 6200 },
+      { stage: 'Thanh toán', value: 2840 },
+    ];
+
+    const channelMetrics = [
+      { name: 'Google Ads', roas: 4.2, color: '#DF6B33' },
+      { name: 'Facebook', roas: 3.1, color: '#6366F1' },
+      { name: 'SEO / Organic', roas: 8.5, color: '#10B981' },
+      { name: 'Email', roas: 6.2, color: '#F59E0B' },
+    ];
+
+    const campaignData = [
+      { name: 'Summer Sale 2025', channel: 'Google', budget: 25000000, impression: 1250000, click: 38000, orders: 1240, roas: 5.2 },
+      { name: 'Flash Deal 8.8', channel: 'Facebook', budget: 18000000, impression: 980000, click: 28000, orders: 890, roas: 4.1 },
+      { name: 'Black Friday', channel: 'Google', budget: 35000000, impression: 2100000, click: 65000, orders: 2150, roas: 6.8 },
+      { name: 'Fashion Week', channel: 'Instagram', budget: 12000000, impression: 720000, click: 19000, orders: 560, roas: 3.8 },
+      { name: 'Loyalty Program', channel: 'Email', budget: 5000000, impression: 450000, click: 15000, orders: 480, roas: 7.2 },
+    ];
+
+    const trafficData = [
+      { source: 'Organic Search', sessions: 48200, bounceRate: '38%', avgTime: '3m42s', conversions: 1580, rate: '3.3%' },
+      { source: 'Direct', sessions: 32100, bounceRate: '32%', avgTime: '4m15s', conversions: 1120, rate: '3.5%' },
+      { source: 'Paid Search', sessions: 28500, bounceRate: '42%', avgTime: '2m58s', conversions: 940, rate: '3.3%' },
+      { source: 'Social Media', sessions: 19800, bounceRate: '51%', avgTime: '2m12s', conversions: 420, rate: '2.1%' },
+      { source: 'Email', sessions: 12400, bounceRate: '28%', avgTime: '4m50s', conversions: 540, rate: '4.4%' },
+      { source: 'Referral', sessions: 8600, bounceRate: '35%', avgTime: '3m30s', conversions: 280, rate: '3.3%' },
+    ];
+
+    // ===== REVENUE LINE CHART =====
+    new Chart(document.getElementById('revenueChart'), {
+      type: 'line',
+      data: {
+        labels: revenueData.map(d => d.month),
+        datasets: [{
+          label: 'Doanh thu',
+          data: revenueData.map(d => d.revenue),
+          borderColor: '#DF6B33',
+          borderWidth: 2.5,
+          backgroundColor: 'rgba(223,107,51,0.08)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#DF6B33',
+          pointBorderColor: '#DF6B33',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...chartTooltip(),
+            callbacks: { label: ctx => ` ${ctx.parsed.y} tỷ đồng` }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { color: '#6B6C80' }
+          },
+          y: {
+            grid: { color: '#1E2030' },
+            border: { display: false, dash: [4, 4] },
+            ticks: { color: '#6B6C80', callback: v => v + 't' }
+          }
+        }
+      }
+    });
+
+    // ===== CATEGORY BAR CHART =====
+    new Chart(document.getElementById('categoryChart'), {
+      type: 'bar',
+      data: {
+        labels: categoryData.map(d => d.name),
+        datasets: [{
+          label: 'Doanh thu',
+          data: categoryData.map(d => d.revenue),
+          backgroundColor: categoryColors,
+          borderRadius: 6,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...chartTooltip(),
+            callbacks: { label: ctx => ` ${ctx.parsed.x} tỷ đồng` }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: '#1E2030' },
+            border: { display: false },
+            ticks: { color: '#6B6C80', callback: v => v + 't' }
+          },
+          y: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { color: '#6B6C80' }
+          }
+        }
+      }
+    });
+
+    // ===== REVENUE TABLE =====
+    const rtBody = document.getElementById('revenue-table-body');
+    revenueData.forEach((row, i) => {
+      const growth = i === 0 ? 0 : (((row.revenue - revenueData[i - 1].revenue) / revenueData[i - 1].revenue) * 100).toFixed(1);
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-[#1E2030] last:border-0 hover:bg-[#1A1B2E]/30 transition-colors duration-150';
+      const gc = parseFloat(growth) >= 0 ? '#4CAF50' : '#EF5350';
+      const gs = parseFloat(growth) >= 0 ? '↑' : '↓';
+      tr.innerHTML = `
+        <td class="py-3 px-3 text-white font-medium">${row.month} / 2025</td>
+        <td class="py-3 px-3 text-right text-white">${row.revenue.toFixed(1)} tỷ</td>
+        <td class="py-3 px-3 text-right text-[#B0B1C8]">${row.orders.toLocaleString()}</td>
+        <td class="py-3 px-3 text-right text-[#B0B1C8]">${row.aov.toFixed(2)} triệu</td>
+        <td class="py-3 px-3 text-right font-medium" style="color:${gc};">${gs} ${Math.abs(growth)}%</td>`;
+      rtBody.appendChild(tr);
+    });
+
+    // ===== PROFIT AREA CHART =====
+    new Chart(document.getElementById('profitChart'), {
+      type: 'line',
+      data: {
+        labels: profitData.labels,
+        datasets: [
+          {
+            label: 'Lợi nhuận gộp',
+            data: profitData.gross,
+            borderColor: '#10B981',
+            borderWidth: 2.5,
+            backgroundColor: 'rgba(16,185,129,0.1)',
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#10B981',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          },
+          {
+            label: 'Chi phí',
+            data: profitData.expense,
+            borderColor: '#EF4444',
+            borderWidth: 2.5,
+            backgroundColor: 'rgba(239,68,68,0.06)',
+            fill: true,
+            tension: 0.4,
+            borderDash: [5, 4],
+            pointBackgroundColor: '#EF4444',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            align: 'end',
+            labels: { color: '#6B6C80', boxWidth: 24, boxHeight: 2, padding: 16 }
+          },
+          tooltip: {
+            ...chartTooltip(),
+            callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} tỷ` }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { color: '#6B6C80' }
+          },
+          y: {
+            grid: { color: '#1E2030' },
+            border: { display: false },
+            ticks: { color: '#6B6C80', callback: v => v + 't' }
+          }
+        }
+      }
+    });
+
+    // ===== COST PIE CHART =====
+    new Chart(document.getElementById('costPieChart'), {
+      type: 'doughnut',
+      data: {
+        labels: costPieData.map(d => d.name),
+        datasets: [{
+          data: costPieData.map(d => d.value),
+          backgroundColor: costColors,
+          borderWidth: 0,
+          hoverOffset: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        cutout: '62%',
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              color: '#6B6C80',
+              padding: 12,
+              boxWidth: 10,
+              boxHeight: 10,
+              font: { size: 12 }
+            }
+          },
+          tooltip: {
+            ...chartTooltip(),
+            callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` }
+          }
+        }
+      }
+    });
+
+    // ===== BIZ RESULT TABLE =====
+    const bizRows = [
+      { metric: 'Doanh thu thuần', q1: '21.7 tỷ', q2: '27.5 tỷ', q3: '33.1 tỷ', q4: '41.7 tỷ', total: '124 tỷ', highlight: true },
+      { metric: 'Giá vốn hàng bán', q1: '13.0 tỷ', q2: '16.5 tỷ', q3: '19.9 tỷ', q4: '25.0 tỷ', total: '74.4 tỷ', highlight: false },
+      { metric: 'Lợi nhuận gộp', q1: '8.7 tỷ', q2: '11.0 tỷ', q3: '13.2 tỷ', q4: '16.7 tỷ', total: '49.6 tỷ', highlight: true },
+      { metric: 'Chi phí vận hành', q1: '4.2 tỷ', q2: '4.8 tỷ', q3: '5.5 tỷ', q4: '6.3 tỷ', total: '20.8 tỷ', highlight: false },
+      { metric: 'Chi phí marketing', q1: '3.1 tỷ', q2: '3.9 tỷ', q3: '4.6 tỷ', q4: '5.8 tỷ', total: '17.4 tỷ', highlight: false },
+      { metric: 'Lợi nhuận thuần', q1: '1.4 tỷ', q2: '2.3 tỷ', q3: '3.1 tỷ', q4: '4.6 tỷ', total: '11.4 tỷ', highlight: true },
+      { metric: 'Biên lợi nhuận', q1: '6.5%', q2: '8.4%', q3: '9.4%', q4: '11.0%', total: '9.2%', highlight: false },
+    ];
+    const brBody = document.getElementById('bizresult-table-body');
+    bizRows.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.className = `border-b border-[#1E2030] last:border-0 hover:bg-[#1A1B2E]/30 transition-colors duration-150 ${row.highlight ? 'bg-[rgba(223,107,51,0.04)]' : ''}`;
+      tr.innerHTML = `
+        <td class="py-3 px-3 ${row.highlight ? 'text-white font-semibold' : 'text-[#B0B1C8]'}">${row.metric}</td>
+        <td class="py-3 px-3 text-right ${row.highlight ? 'text-white' : 'text-[#B0B1C8]'}">${row.q1}</td>
+        <td class="py-3 px-3 text-right ${row.highlight ? 'text-white' : 'text-[#B0B1C8]'}">${row.q2}</td>
+        <td class="py-3 px-3 text-right ${row.highlight ? 'text-white' : 'text-[#B0B1C8]'}">${row.q3}</td>
+        <td class="py-3 px-3 text-right ${row.highlight ? 'text-white' : 'text-[#B0B1C8]'}">${row.q4}</td>
+        <td class="py-3 px-3 text-right font-semibold ${row.highlight ? 'text-[#DF6B33]' : 'text-white'}">${row.total}</td>`;
+      brBody.appendChild(tr);
+    });
+
+    // ===== FUNNEL CHART =====
+    const funnelMax = funnelData[0].value;
+    const funnelContainer = document.getElementById('funnel-chart');
+    const funnelColors = ['#DF6B33','#E8853D','#6366F1','#8B5CF6','#10B981'];
+    funnelData.forEach((item, i) => {
+      const pct = ((item.value / funnelMax) * 100).toFixed(1);
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-4';
+      row.style = `animation: fadeUp 0.4s ease-out ${i * 0.1}s both;`;
+      row.innerHTML = `
+        <div class="w-28 text-right shrink-0">
+          <span class="font-inter text-xs text-[#6B6C80]">${item.stage}</span>
+        </div>
+        <div class="flex-1 relative h-9 bg-[#1A1B2E] rounded-lg overflow-hidden">
+          <div class="absolute inset-y-0 left-0 rounded-lg flex items-center px-3 transition-all duration-700"
+               style="width:${pct}%; background:${funnelColors[i]}; opacity:0.85;">
+            <span class="font-inter text-xs font-semibold text-white whitespace-nowrap">${item.value.toLocaleString()}</span>
+          </div>
+        </div>
+        <div class="w-12 text-left shrink-0">
+          <span class="font-inter text-xs text-[#6B6C80]">${pct}%</span>
+        </div>`;
+      funnelContainer.appendChild(row);
+    });
+
+    // ===== CHANNEL METRICS =====
+    const chContainer = document.getElementById('channel-metrics');
+    channelMetrics.forEach(ch => {
+      const item = document.createElement('div');
+      item.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full" style="background:${ch.color};"></div>
+            <span class="font-inter text-sm text-[#B0B1C8]">${ch.name}</span>
+          </div>
+          <div class="text-right">
+            <span class="font-poppins font-bold text-sm text-white">${ch.roas}x</span>
+            <span class="font-inter text-xs text-[#6B6C80] ml-1">ROAS</span>
+          </div>
+        </div>
+        <div class="w-full h-1.5 bg-[#1A1B2E] rounded-full mt-1 overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-1000 ease-out" style="width:${Math.min((ch.roas / 10) * 100, 100)}%; background:${ch.color};"></div>
+        </div>`;
+      chContainer.appendChild(item);
+    });
+
+    // ===== CAMPAIGN TABLE =====
+    const cpBody = document.getElementById('campaign-table-body');
+    campaignData.forEach(row => {
+      const rc = row.roas >= 5 ? '#4CAF50' : row.roas >= 3.5 ? '#F59E0B' : '#EF5350';
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-[#1E2030] last:border-0 hover:bg-[#1A1B2E]/30 transition-colors duration-150';
+      tr.innerHTML = `
+        <td class="py-3 px-3 text-white font-medium">${row.name}</td>
+        <td class="py-3 px-3"><span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium" style="background:rgba(99,102,241,0.15); color:#818CF8;">${row.channel}</span></td>
+        <td class="py-3 px-3 text-right text-[#B0B1C8]">${(row.budget / 1000000).toFixed(0)}M</td>
+        <td class="py-3 px-3 text-right text-[#B0B1C8]">${row.impression.toLocaleString()}</td>
+        <td class="py-3 px-3 text-right text-[#B0B1C8]">${row.click.toLocaleString()}</td>
+        <td class="py-3 px-3 text-right text-white font-medium">${row.orders.toLocaleString()}</td>
+        <td class="py-3 px-3 text-right font-bold" style="color:${rc};">${row.roas}x</td>`;
+      cpBody.appendChild(tr);
+    });
+
+    // ===== TRAFFIC TABLE =====
+    const tfBody = document.getElementById('traffic-table-body');
+    const totalSessions = trafficData.reduce((s, r) => s + r.sessions, 0);
+    trafficData.forEach(row => {
+      const rateColor = parseFloat(row.rate) >= 3.5 ? '#4CAF50' : parseFloat(row.rate) >= 2 ? '#F59E0B' : '#EF5350';
+      const bounceColor = parseFloat(row.bounceRate) < 35 ? '#4CAF50' : parseFloat(row.bounceRate) < 45 ? '#F59E0B' : '#EF5350';
+      const pct = ((row.sessions / totalSessions) * 100).toFixed(1);
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-[#1E2030] last:border-0 hover:bg-[#1A1B2E]/30 transition-colors duration-150';
+      tr.innerHTML = `
+        <td class="py-3 px-3 text-white font-medium">${row.source}</td>
+        <td class="py-3 px-3 text-right text-[#B0B1C8]">${row.sessions.toLocaleString()}</td>
+        <td class="py-3 px-3 text-right font-medium" style="color:${bounceColor};">${row.bounceRate}</td>
+        <td class="py-3 px-3 text-right text-[#B0B1C8]">${row.avgTime}</td>
+        <td class="py-3 px-3 text-right text-white font-medium">${row.conversions.toLocaleString()}</td>
+        <td class="py-3 px-3 text-right font-medium" style="color:${rateColor};">${pct}%</td>`;
+      tfBody.appendChild(tr);
+    });
+  </script>
+</body>
+</html>
